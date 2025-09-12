@@ -14,13 +14,24 @@
 
                 {% if todos is not empty %}
                     <ul class="list-group mb-4">
-                        {% for todo in todos %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                {{ todo.task }}
-                                {% if todo.done %}
-                                    <span class="badge bg-success">Done</span>
-                                {% endif %}
-                            </li>
+                        {% for t in todos %}
+                            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                <div>
+                                    {{ t.task }} {% if t.done %}<span class="badge bg-success">Done</span>{% endif %}
+                                </div>
+                                <div class="btn-group">
+                                    {% if is_granted('EDIT', t) %}
+                                        <form method="post" action="{{ path('todo_toggle', {id: t.id}) }}">
+                                            <button class="btn btn-sm btn-outline-secondary">{{ t.done ? 'Undo' : 'Complete' }}</button>
+                                        </form>
+                                    {% endif %}
+                                    {% if is_granted('DELETE', t) %}
+                                        <form method="post" action="{{ path('todo_delete', {id: t.id}) }}" onsubmit="return confirm('Delete this todo?')">
+                                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
                         {% endfor %}
                     </ul>
                 {% else %}
