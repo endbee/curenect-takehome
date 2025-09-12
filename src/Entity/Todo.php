@@ -25,6 +25,10 @@ class Todo
     #[ORM\Column]
     private ?bool $done = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?User $owner = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,5 +56,13 @@ class Todo
         $this->done = $done;
 
         return $this;
+    }
+
+    public function getOwner(): ?User {
+        return $this->owner;
+    }
+
+    public function setOwner(User $owner): self {
+        $this->owner = $owner; return $this;
     }
 }
