@@ -2,7 +2,7 @@
 
 - [x] Introduce TodoType + validation to replace the raw form.
 
-- [ ] Add User + ownership + TodoVoter.
+- [x] Add User + ownership + TodoVoter.
 
 - [ ] Extract TodoService and move controller logic there.
 
