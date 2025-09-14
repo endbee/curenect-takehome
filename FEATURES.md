@@ -4,7 +4,7 @@
 
 - [x] Add User + ownership + TodoVoter.
 
-- [ ] Extract TodoService and move controller logic there.
+- [x] Extract TodoService and move controller logic there.
 
 - [ ] Add a /api/todos read-only endpoint.
 

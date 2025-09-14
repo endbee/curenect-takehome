@@ -29,6 +29,9 @@ class Todo
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $owner = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $dueAt = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -64,5 +67,17 @@ class Todo
 
     public function setOwner(User $owner): self {
         $this->owner = $owner; return $this;
+    }
+
+    public function getDueAt(): ?\DateTimeImmutable
+    {
+        return $this->dueAt;
+    }
+
+    public function setDueAt(?\DateTimeImmutable $dueAt): static
+    {
+        $this->dueAt = $dueAt;
+
+        return $this;
     }
 }
