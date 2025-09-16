@@ -16,5 +16,11 @@ services:
     App\:
         resource: '../src/'
 
+    App\EventSubscriber\TodoDueDateSubscriber:
+        arguments:
+            $leadSeconds: 120   # or a parameter
+        tags:
+            - { name: 'doctrine.event_subscriber', connection: 'default' }
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

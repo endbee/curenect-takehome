@@ -1,6 +1,5 @@
 <?php
 
-// src/Security/Voter/TodoVoter.php
 namespace App\Security\Voter;
 
 use App\Entity\Todo;
@@ -30,12 +29,10 @@ class TodoVoter extends Voter
         /** @var Todo $todo */
         $todo = $subject;
 
-        // Admins can do anything
         if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
             return true;
         }
 
-        // Owner-only policy
         return $todo->getOwner() && $todo->getOwner()->getId() === $user->getId();
     }
 }
