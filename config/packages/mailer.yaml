@@ -1,3 +1,5 @@
 framework:
     mailer:
+        envelope:
+            sender: 'reminders@todo-list.test'
         dsn: '%env(MAILER_DSN)%'

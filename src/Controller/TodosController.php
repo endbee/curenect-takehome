@@ -1,11 +1,11 @@
 <?php
 
-// src/Controller/TodosController.php
 namespace App\Controller;
 
 use App\Entity\Todo;
 use App\FormType\TodoType;
 use App\Service\TodoService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +18,7 @@ final class TodosController extends AbstractController
 
     #[Route('/', name: 'index', methods: ['GET','POST'])]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $request): Response
+    public function index(Request $request, LoggerInterface $logger): Response
     {
         $todo = new Todo();
         $form = $this->createForm(TodoType::class, $todo)->handleRequest($request);
@@ -29,7 +29,7 @@ final class TodosController extends AbstractController
             return $this->redirectToRoute('index');
         }
 
-        return $this->render('index/index.html.twig', [
+        return $this->render('web/index/index.html.twig', [
             'form'  => $form->createView(),
             'todos' => $this->todoService->listFor($this->getUser()),
         ]);

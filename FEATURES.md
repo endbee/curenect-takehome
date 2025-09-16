@@ -4,13 +4,8 @@
 
 - [x] Add User + ownership + TodoVoter.
 
-- [ ] Extract TodoService and move controller logic there.
+- [x] Extract TodoService and move controller logic there.
 
-- [ ] Add a /api/todos read-only endpoint.
+- [x] Wire a Doctrine EventSubscriber to dispatch SendReminderMessage.
 
-- [ ] Wire a Doctrine EventSubscriber to dispatch SendReminderMessage.
-
-- [ ] Add Messenger transport + reminder handler.
-
-- [ ] Layer on filters/pagination and export.
- 
+- [x] Add Messenger transport + reminder handler.

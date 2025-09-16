@@ -1,0 +1,10 @@
+<h2>⏰ Reminder</h2>
+<p><strong>{{ todo.task }}</strong></p>
+
+{% if todo.dueAt %}
+    <p>Due {{ todo.dueAt|date('d.m.Y H:i', 'Europe/Berlin') }}.</p>
+{% endif %}
+
+<p><a href="{{ link }}">Open your todos</a></p>
+<hr>
+<p style="color:#777;font-size:12px">You’re receiving this because you scheduled a due date.</p>

@@ -1,59 +1,65 @@
 <?php
-// src/Controller/AuthController.php
+
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\DTO\RegistrationData;
+use App\FormType\LoginFormType;
+use App\FormType\RegistrationFormType;
+use App\Service\AuthService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class AuthController extends AbstractController
 {
+    public function __construct(private readonly AuthService $auth) {}
+
     #[Route('/login', name: 'app_login', methods: ['GET','POST'])]
-    public function login(AuthenticationUtils $utils): Response
+    public function login(Request $request, AuthenticationUtils $utils): Response
     {
-        return $this->render('security/login.html.twig', [
-            'last_username' => $utils->getLastUsername(),
-            'error' => $utils->getLastAuthenticationError()
+        $form = $this->createForm(LoginFormType::class, null, [
+            'action' => $this->generateUrl('app_login'),
+            'method' => 'POST',
+        ]);
+        $form->get('_username')->setData($utils->getLastUsername());
+
+        return $this->render('web/security/login.html.twig', [
+            'form'  => $form->createView(),
+            'error' => $utils->getLastAuthenticationError(),
         ]);
     }
 
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
-        // handled by Symfony
+        // handled by Symfony firewall
     }
 
     #[Route('/register', name: 'app_register', methods: ['GET','POST'])]
-    public function register(
-        Request $request,
-        UserPasswordHasherInterface $hasher,
-        UserRepository $users,
-        EntityManagerInterface $em
-    ): Response {
-        if ($request->isMethod('POST')) {
-            $email = trim((string) $request->request->get('email'));
-            $plain = (string) $request->request->get('password');
+    public function register(Request $request): Response
+    {
+        $data = new RegistrationData();
+        $form = $this->createForm(RegistrationFormType::class, $data);
+        $form->handleRequest($request);
 
-            if (!$email || !$plain) {
-                $this->addFlash('error', 'Email and password are required.');
-            } elseif ($users->findOneBy(['email' => strtolower($email)])) {
-                $this->addFlash('error', 'Email already registered.');
-            } else {
-                $user = (new User())->setEmail($email);
-                $user->setPassword($hasher->hashPassword($user, $plain));
-                $em->persist($user);           // ← use injected EM
-                $em->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $result = $this->auth->register($data->email, $data->plainPassword);
+
+            if ($result->isSuccess()) {
                 $this->addFlash('success', 'Account created. You can log in now.');
                 return $this->redirectToRoute('app_login');
             }
+
+            foreach ($result->getErrors() as $msg) {
+                $this->addFlash('error', $msg);
+            }
         }
 
-        return $this->render('security/register.html.twig');
+        return $this->render('web/security/register.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
+
