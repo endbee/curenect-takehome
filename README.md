@@ -1,4 +1,4 @@
-# Todo App (Symfony)
+# Curenect Takehome
 
 A simple Todo list built with Symfony. It supports user accounts, per-user ownership, due dates and email reminders scheduled via Messenger.
 
