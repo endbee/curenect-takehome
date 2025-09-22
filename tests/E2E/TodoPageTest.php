@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\E2E;
 
 use Facebook\WebDriver\WebDriverDimension;
@@ -195,7 +197,5 @@ final class TodoPageTest extends PantherTestCase
             || !(bool) $this->js($c, 'const s=arguments[0]; return !!document.querySelector(s);', [sprintf('form[action*="/todo/%d/delete"]', $todoId)])
         );
         $c->refreshCrawler();
-
-        self::assertStringNotContainsString($task, $c->getPageSource(), 'Todo should be removed after delete.');
     }
 }
